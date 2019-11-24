@@ -1,6 +1,7 @@
 #include "kalman_filter.h"
 #include "tools.h"
 #include <iostream>
+#include <cmath>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -22,10 +23,6 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in, MatrixXd
   P_ = P_in;
   F_ = F_in;
   Q_ = Q_in;
-
-//   H_ = H_in;
-//   R_ = R_in;
-//   Q_ = Q_in;
 }
 
 void KalmanFilter::Predict() {
@@ -60,6 +57,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z, const MatrixXd &R, const MatrixX
   float vy=x_(3);
   float mag=std::sqrt(px*px+py*py);
   float angle=std::atan2(py,px);
+  std::cout <<angle<<std::endl;
   if (mag<0.1){
     std::cout<< "Very low mag found"<<std::endl;
     mag=0.1;
@@ -71,6 +69,12 @@ void KalmanFilter::UpdateEKF(const VectorXd &z, const MatrixXd &R, const MatrixX
   hxp<< mag, angle, (px*vx+py*vy)/mag;
   
   VectorXd y = z-hxp;
+  if (y(1)<=-M_PI){
+    y(1)+=2*M_PI;
+  }
+  else if(y(1)>=M_PI){
+    y(1)-=2*M_PI;
+  }
   MatrixXd S_ = Hj*P_*Hj.transpose()+R;
   MatrixXd K = P_*Hj.transpose()*S_.inverse();
   x_=x_+K*y;
