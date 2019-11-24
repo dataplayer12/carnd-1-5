@@ -48,7 +48,7 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
   
   if(den2< 0.01){
     std::cout<<"den2 is very low!"<<std::endl;
-    den2=1e-4;
+    //den2=1e-4;
     Hj << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
     return Hj;
   }

@@ -57,7 +57,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z, const MatrixXd &R, const MatrixX
   float vy=x_(3);
   float mag=std::sqrt(px*px+py*py);
   float angle=std::atan2(py,px);
-  std::cout <<angle<<std::endl;
+  //std::cout <<angle<<std::endl;
   if (mag<0.1){
     std::cout<< "Very low mag found"<<std::endl;
     mag=0.1;
