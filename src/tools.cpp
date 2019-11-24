@@ -17,7 +17,7 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
   VectorXd rmse(4);
   rmse << 0,0,0,0;
   
-  if (estimations.size()==0|(estimations.size()!=ground_truth.size())){
+  if ((estimations.size()==0)|(estimations.size()!=ground_truth.size())){
   std::cout << "Error! Invalid inputs to calculate rmse" <<std::endl;
     return rmse;
   }

@@ -1,6 +1,6 @@
 #include "kalman_filter.h"
 #include "tools.h"
-//#include <iostream>
+#include <iostream>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -14,14 +14,15 @@ KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
 
-void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in) {
+void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in, MatrixXd &Q_in) {
   /*
-                        MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in
+                        MatrixXd &H_in, MatrixXd &R_in, 
   */
   x_ = x_in;
   P_ = P_in;
   F_ = F_in;
-  
+  Q_ = Q_in;
+
 //   H_ = H_in;
 //   R_ = R_in;
 //   Q_ = Q_in;
@@ -31,9 +32,10 @@ void KalmanFilter::Predict() {
   /**
    * TODO: predict the state
    */
+  //std::cout<< "Predicting"<<std::endl;
   x_=F_*x_;
   P_=F_*P_*F_.transpose()+Q_;
-  
+  //std::cout<< "Prediction finished"<<std::endl;
 }
 
 void KalmanFilter::Update(const VectorXd &z, const MatrixXd &H, const MatrixXd &R) {
@@ -58,9 +60,9 @@ void KalmanFilter::UpdateEKF(const VectorXd &z, const MatrixXd &R, const MatrixX
   float vy=x_(3);
   float mag=std::sqrt(px*px+py*py);
   float angle=std::atan2(py,px);
-  if (mag<1e-2){
-    //std::cout<< "Very low mag found"<<std::endl;
-    mag=1e-2;
+  if (mag<0.1){
+    std::cout<< "Very low mag found"<<std::endl;
+    mag=0.1;
   }
   
   //mag= (mag<1e-4)? 1e-4:mag; //cap minimum value of mag to 1e-4
